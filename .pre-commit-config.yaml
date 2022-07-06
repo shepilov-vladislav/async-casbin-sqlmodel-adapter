@@ -47,8 +47,6 @@ repos:
     language_version: python3.10
   - id: destroyed-symlinks
     language_version: python3.10
-  - id: detect-aws-credentials
-    language_version: python3.10
   - id: detect-private-key
     language_version: python3.10
   - id: end-of-file-fixer
@@ -66,9 +64,6 @@ repos:
     language_version: python3.10
   - id: name-tests-test
     args: ['--pytest-test-first']
-    language_version: python3.10
-  - id: no-commit-to-branch
-    args: [--branch, main]
     language_version: python3.10
   - id: pretty-format-json
     language_version: python3.10
@@ -92,12 +87,6 @@ repos:
     language_version: python3.10
   repo: https://github.com/asottile/pyupgrade
   rev: v2.34.0
-- hooks:
-  - id: python-safety-dependencies-check
-    files: pyproject.toml
-    language_version: python3.10
-  repo: https://github.com/Lucas-C/pre-commit-hooks-safety
-  rev: v1.3.0
 - hooks:
   - id: check-gitlab-ci
     stages: [commit-msg]
