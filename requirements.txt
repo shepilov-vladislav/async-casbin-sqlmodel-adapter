@@ -1,0 +1,13 @@
+asynccasbin==1.1.8; python_version >= "3.7"
+bracex==2.1.1; python_version >= "3.7"
+greenlet==1.1.2; (python_version >= "2.7" and python_full_version < "3.0.0") or (python_full_version >= "3.5.0")
+mypy==0.961; python_version >= "3.6" and (python_version >= "2.7" and python_full_version < "3.0.0" or python_full_version >= "3.6.0") and python_full_version >= "3.6.1" and python_full_version < "4.0.0"
+mypy-extensions==0.4.3; python_version >= "3.6" and (python_version >= "2.7" and python_full_version < "3.0.0" or python_full_version >= "3.6.0") and python_full_version >= "3.6.1" and python_full_version < "4.0.0"
+pydantic==1.9.1; python_full_version >= "3.6.1" and python_full_version < "4.0.0"
+sqlalchemy==1.4.39; (python_version >= "2.7" and python_full_version < "3.0.0") or (python_full_version >= "3.6.0")
+sqlalchemy2-stubs==0.0.2a24; python_full_version >= "3.6.1" and python_full_version < "4.0.0" and python_version >= "3.6"
+sqlmodel==0.0.6; python_full_version >= "3.6.1" and python_full_version < "4.0.0"
+tomli==2.0.1; python_version >= "3.7" and (python_version >= "2.7" and python_full_version < "3.0.0" or python_full_version >= "3.6.0") and python_full_version >= "3.6.1" and python_full_version < "4.0.0" and python_version < "3.11"
+typing-extensions==4.2.0; python_full_version >= "3.6.1" and python_full_version < "4.0.0" and python_version >= "3.7" and (python_version >= "2.7" and python_full_version < "3.0.0" or python_full_version >= "3.6.0")
+unicode==2.8; python_version >= "3.7"
+wcmatch==8.2; python_version >= "3.7"

@@ -1,0 +1,144 @@
+repos:
+- hooks:
+  - id: seed-isort-config
+    language_version: python3.10
+  repo: https://github.com/asottile/seed-isort-config
+  rev: v2.2.0
+- hooks:
+  - id: isort
+    language_version: python3.10
+  repo: https://github.com/pre-commit/mirrors-isort
+  rev: v5.10.1
+- hooks:
+  - id: black
+    language_version: python3.10
+  repo: https://github.com/ambv/black
+  rev: 22.6.0
+- hooks:
+  - id: check-added-large-files
+    language_version: python3.10
+  - id: check-ast
+    language_version: python3.10
+  - id: check-builtin-literals
+    language_version: python3.10
+  - id: check-case-conflict
+    language_version: python3.10
+  - id: check-docstring-first
+    language_version: python3.10
+  - id: check-executables-have-shebangs
+    language_version: python3.10
+  - id: check-json
+    language_version: python3.10
+  - id: check-merge-conflict
+    language_version: python3.10
+  - id: check-shebang-scripts-are-executable
+    language_version: python3.10
+  - id: check-symlinks
+    language_version: python3.10
+  - id: check-toml
+    language_version: python3.10
+  - id: check-vcs-permalinks
+    language_version: python3.10
+  - id: check-xml
+    language_version: python3.10
+  - id: check-yaml
+    language_version: python3.10
+  - id: debug-statements
+    language_version: python3.10
+  - id: destroyed-symlinks
+    language_version: python3.10
+  - id: detect-aws-credentials
+    language_version: python3.10
+  - id: detect-private-key
+    language_version: python3.10
+  - id: end-of-file-fixer
+    language_version: python3.10
+  - id: fix-byte-order-marker
+    language_version: python3.10
+  - id: fix-encoding-pragma
+    language_version: python3.10
+    args: ['--remove']
+  - id: file-contents-sorter
+    language_version: python3.10
+  - id: forbid-new-submodules
+    language_version: python3.10
+  - id: mixed-line-ending
+    language_version: python3.10
+  - id: name-tests-test
+    args: ['--pytest-test-first']
+    language_version: python3.10
+  - id: no-commit-to-branch
+    args: [--branch, main]
+    language_version: python3.10
+  - id: pretty-format-json
+    language_version: python3.10
+  - id: requirements-txt-fixer
+    language_version: python3.10
+  - id: sort-simple-yaml
+    language_version: python3.10
+  - id: trailing-whitespace
+    language_version: python3.10
+  repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v4.3.0
+- hooks:
+  - id: flake8
+    additional_dependencies: [flake8-bugbear == 21.11.29]
+    exclude: "(?x)^(\n    tests/.*|\n    ^conftest.py|\n)$"
+    language_version: python3.10
+  repo: https://gitlab.com/pycqa/flake8
+  rev: 3.9.2
+- hooks:
+  - id: pyupgrade
+    language_version: python3.10
+  repo: https://github.com/asottile/pyupgrade
+  rev: v2.34.0
+- hooks:
+  - id: python-safety-dependencies-check
+    files: pyproject.toml
+    language_version: python3.10
+  repo: https://github.com/Lucas-C/pre-commit-hooks-safety
+  rev: v1.3.0
+- hooks:
+  - id: check-gitlab-ci
+    stages: [commit-msg]
+  repo: https://gitlab.com/smop/pre-commit-hooks
+  rev: v1.0.0
+- hooks:
+  - id: pylint
+    entry: pylint
+    exclude: "(?x)^(\n    tests/.*|\n    ^conftest.py|\n)$"
+    language_version: python3.10
+  repo: https://github.com/pre-commit/mirrors-pylint.git
+  rev: v3.0.0a5
+- hooks:
+  - id: mypy
+    additional_dependencies: [
+      types-SQLAlchemy==1.4.39
+    ]
+    exclude: "(?x)^(\n    tests/.*|\n    ^conftest.py|\n)$"
+    language_version: python3.10
+  repo: https://github.com/pre-commit/mirrors-mypy
+  rev: v0.961
+- hooks:
+  - id: blacken-docs
+    additional_dependencies: [black==22.6.0]
+    language_version: python3.10
+  repo: https://github.com/asottile/blacken-docs
+  rev: v1.12.1
+- hooks:
+  - id: bandit
+    exclude: "(?x)^(\n    tests/.*|\n    ^conftest.py|\n)$"
+    language_version: python3.10
+  repo: https://github.com/PyCQA/bandit
+  rev: 1.7.4
+# - hooks:
+#   - id: pep257
+#     language_version: python3.10
+#   repo: https://github.com/FalconSocial/pre-commit-mirrors-pep257
+#   rev: v0.3.3
+# - hooks:
+#   - id: dead
+#     exclude: "(?x)^(\n    .*/tests/.*|\n    .*/migrations/.*|\n)$"
+#     language_version: python3.10
+#   repo: https://github.com/asottile/dead
+#   rev: v1.5.0

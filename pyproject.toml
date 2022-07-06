@@ -1,0 +1,72 @@
+[tool.poetry]
+name = "async-casbin-sqlmodel-adapter"
+version = "0.0.1"
+description = "Async SQLModel Adapter for PyCasbin"
+authors = ["Vladislav Shepilov <shepilov.v@protonmail.com>"]
+keywords = ["pycasbin", "asynccasbin", "sqlmodel"]
+readme = "README.md"
+license = "Apache License 2.0"
+homepage = "https://github.com/shepilov-vladislav/sqlmodel-casbin-adapter"
+repository = "https://github.com/shepilov-vladislav/sqlmodel-casbin-adapter"
+include = [
+    "LICENSE",
+]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+asynccasbin = "^1.1.8"
+sqlmodel = "^0.0.6"
+SQLAlchemy = {version = "^1.4.39", extras = ["mypy", "asyncio"]}
+
+[tool.poetry.dev-dependencies]
+pytest = "^7.1.1"
+pytest-cov = "^3.0.0"
+alt-pytest-asyncio = "^0.6.0"
+aiosqlite = "^0.17.0"
+greenlet = "^1.1.2"
+
+[tool.isort]
+known_third_party = ["casbin", "pytest", "sqlalchemy", "sqlmodel"]
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+line_length = 88
+default_section = "THIRDPARTY"
+known_first_party = "async_casbin_sqlmodel_adapter"
+sections = "FUTURE,STDLIB,THIRDPARTY,FIRSTPARTY,LOCALFOLDER"
+import_heading_future = "Future:"
+import_heading_stdlib = "Stdlib:"
+import_heading_thirdparty = "Thirdparty:"
+import_heading_firstparty = "Firstparty:"
+import_heading_localfolder = "Localfolder:"
+
+[tool.black]
+length = 88
+
+[tool.pylint.'MESSAGES CONTROL']
+disable = ["import-error", "missing-module-docstring"]
+
+[tool.mypy]
+ignore_missing_imports = true
+check_untyped_defs = true
+disallow_any_generics = true
+disallow_untyped_defs = true
+follow_imports = "silent"
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+show_error_codes = true
+
+[tool.pytest.ini_options]
+minversion = "7.0.1"
+addopts = "-ra -q"
+filterwarnings = [
+    "once::DeprecationWarning",
+    "once::PendingDeprecationWarning",
+    "ignore::sqlalchemy.exc.SAWarning",
+]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
