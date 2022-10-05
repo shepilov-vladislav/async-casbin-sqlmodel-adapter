@@ -1,2 +1,2 @@
 # Localfolder:
-from .adapter import Adapter, AdapterException, CasbinRule, Filter  # noqa: F401
+from .adapter import Adapter, AdapterException, Filter  # noqa: F401

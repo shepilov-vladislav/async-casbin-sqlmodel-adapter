@@ -9,7 +9,8 @@ from sqlalchemy.orm import sessionmaker
 from sqlmodel import Field, SQLModel, delete
 
 # Firstparty:
-from async_casbin_sqlmodel_adapter import Adapter, CasbinRule
+from async_casbin_sqlmodel_adapter import Adapter
+from async_casbin_sqlmodel_adapter.models import CasbinRule
 
 
 @pytest.fixture(name="engine")

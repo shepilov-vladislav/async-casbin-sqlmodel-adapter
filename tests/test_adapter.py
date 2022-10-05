@@ -8,7 +8,8 @@ from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession
 from sqlmodel import SQLModel, select
 
 # Firstparty:
-from async_casbin_sqlmodel_adapter import Adapter, AdapterException, CasbinRule, Filter
+from async_casbin_sqlmodel_adapter import Adapter, AdapterException, Filter
+from async_casbin_sqlmodel_adapter.models import CasbinRule
 
 
 async def test_custom_db_class(

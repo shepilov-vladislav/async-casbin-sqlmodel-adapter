@@ -9,41 +9,12 @@ from casbin.persist.adapters.update_adapter import UpdateAdapter
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql.dml import Delete
-from sqlmodel import Field, SQLModel, delete, or_, select
+from sqlmodel import SQLModel, delete, or_, select
 from sqlmodel.sql.expression import SelectOfScalar
 
 
 class AdapterException(Exception):
     """AdapterException"""
-
-
-class CasbinRule(SQLModel, table=True):  # type: ignore
-    """
-    CasbinRule class for SQLModel-based Casbin adapter.
-    """
-
-    __tablename__ = "casbin_rule"
-
-    id: int = Field(primary_key=True)
-    ptype: str = Field(max_length=255)
-    v0: str = Field(max_length=255)
-    v1: str = Field(max_length=255)
-    v2: str | None = Field(max_length=255, default=None)
-    v3: str | None = Field(max_length=255, default=None)
-    v4: str | None = Field(max_length=255, default=None)
-    v5: str | None = Field(max_length=255, default=None)
-
-    def __str__(self) -> str:
-        arr = [self.ptype]
-        # pylint: disable=invalid-name
-        for v in (self.v0, self.v1, self.v2, self.v3, self.v4, self.v5):
-            if v is None:
-                break
-            arr.append(v)
-        return ", ".join(arr)
-
-    def __repr__(self) -> str:
-        return f'<CasbinRule {self.id}: "{str(self)}">'
 
 
 class Filter:  # pylint: disable=too-few-public-methods
@@ -79,6 +50,10 @@ class Adapter(BaseAdapter, UpdateAdapter):
             self._engine = engine
 
         if db_class is None:
+            from .models import (  # isort: skip # pylint: disable=import-outside-toplevel
+                CasbinRule,
+            )
+
             db_class = CasbinRule
         else:
             for attr in (
