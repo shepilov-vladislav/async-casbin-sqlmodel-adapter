@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "async-casbin-sqlmodel-adapter"
-version = "0.0.4"
+version = "0.0.5"
 description = "Async SQLModel Adapter for PyCasbin"
 authors = ["Vladislav Shepilov <shepilov.v@protonmail.com>"]
 keywords = ["pycasbin", "asynccasbin", "sqlmodel"]
@@ -15,8 +15,8 @@ include = [
 [tool.poetry.dependencies]
 python = "^3.10"
 asynccasbin = "^1.1.8"
-sqlmodel = "^0.0.8"
-SQLAlchemy = {version = ">=1.4.17,<=1.4.41", extras = ["mypy", "asyncio"]}
+sqlmodel = "^0.0.14"
+SQLAlchemy = {version = "^2.0.25", extras = ["mypy", "asyncio"]}
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.1.3"
