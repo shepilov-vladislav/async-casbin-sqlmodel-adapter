@@ -251,3 +251,28 @@ class AsyncAdapter(BaseAsyncAdapter, BaseAsyncUpdateAdapter):
 
         for i, rule in enumerate(old_rules):
             await self.update_policy(sec, ptype, rule, new_rules[i])
+
+    async def update_filtered_policies(
+        self,
+        sec: str,
+        ptype: str,
+        new_rules: list[list[str]],
+        field_index: int,
+        *field_values: str
+    ) -> None:
+        """
+        Update the filtered policies in the database (storage).
+        Deletes old rules that match the filter and adds new rules.
+        :param sec: section type
+        :param ptype: policy type
+        :param new_rules: the new rules to add
+        :param field_index: the index of the field to filter on
+        :param field_values: the values of the field to filter on
+        :return: None
+        """
+
+        # Remove old rules that match the filter
+        await self.remove_filtered_policy(sec, ptype, field_index, *field_values)
+
+        # Add new rules
+        await self.add_policies(sec, ptype, new_rules)
