@@ -10,23 +10,8 @@ from sqlalchemy.sql.dml import Delete
 from sqlmodel import SQLModel, delete, or_, select
 from sqlmodel.sql.expression import SelectOfScalar
 from casbin.persist.adapters.asyncio import AsyncUpdateAdapter as BaseAsyncUpdateAdapter, AsyncAdapter as BaseAsyncAdapter
-
-class AdapterException(Exception):
-    """AdapterException"""
-
-
-class Filter:  # pylint: disable=too-few-public-methods
-    """
-    Filter class for SQLModel-based Casbin adapter.
-    """
-
-    ptype: list[str] = []
-    v0: list[str] = []
-    v1: list[str] = []
-    v2: list[str] = []
-    v3: list[str] = []
-    v4: list[str] = []
-    v5: list[str] = []
+from .exception import AdapterException
+from .filter import Filter
 
 
 class AsyncAdapter(BaseAsyncAdapter, BaseAsyncUpdateAdapter):
