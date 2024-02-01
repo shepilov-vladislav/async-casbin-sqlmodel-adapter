@@ -69,6 +69,20 @@ files = [
 ]
 
 [[package]]
+name = "casbin"
+version = "1.35.0"
+description = "An authorization library that supports access control models like ACL, RBAC, ABAC in Python"
+optional = false
+python-versions = ">=3.3"
+files = [
+    {file = "casbin-1.35.0-py3-none-any.whl", hash = "sha256:e17f365b439f430f8bbde533e580dc1eb85cf1da5e5c830aafad3b1acec00cb7"},
+    {file = "casbin-1.35.0.tar.gz", hash = "sha256:73c5bb375154019af9ba87a5e05aa12cdae28227c5466228aa76d361182653cc"},
+]
+
+[package.dependencies]
+simpleeval = ">=0.9.11"
+
+[[package]]
 name = "colorama"
 version = "0.4.6"
 description = "Cross-platform colored terminal text."
@@ -484,6 +498,17 @@ pytest = ">=4.6"
 testing = ["fields", "hunter", "process-tests", "pytest-xdist", "six", "virtualenv"]
 
 [[package]]
+name = "simpleeval"
+version = "0.9.13"
+description = "A simple, safe single expression evaluator library."
+optional = false
+python-versions = "*"
+files = [
+    {file = "simpleeval-0.9.13-py2.py3-none-any.whl", hash = "sha256:22a2701a5006e4188d125d34accf2405c2c37c93f6b346f2484b6422415ae54a"},
+    {file = "simpleeval-0.9.13.tar.gz", hash = "sha256:4a30f9cc01825fe4c719c785e3762623e350c4840d5e6855c2a8496baaa65fac"},
+]
+
+[[package]]
 name = "sqlalchemy"
 version = "2.0.25"
 description = "Database Abstraction Library"
@@ -636,4 +661,4 @@ bracex = ">=2.1.1"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "a2441a99879d26e0c4d688a9af15a2bca36121dae5749f872da28c2776af769b"
+content-hash = "b98f85a3082f6d80e5c378bdc31ae4a2219f19821029a1f4653a9194bdf51955"
