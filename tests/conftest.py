@@ -9,7 +9,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlmodel import Field, SQLModel, delete
 
 # Firstparty:
-from async_casbin_sqlmodel_adapter import Adapter
+from async_casbin_sqlmodel_adapter import Adapter, AsyncAdapter
 from async_casbin_sqlmodel_adapter.models import CasbinRule
 
 
@@ -57,8 +57,29 @@ async def enforcer_fixture(
     await enforcer.load_policy()
     return enforcer
 
+@pytest.fixture(name="async_enforcer")
+async def async_enforcer_fixture(
+    engine: AsyncEngine, session: AsyncSession, rbac_model_conf: str
+):
+    await session.execute(delete(CasbinRule))
+    session.add_all(
+        [
+            CasbinRule(ptype="p", v0="alice", v1="data1", v2="read"),
+            CasbinRule(ptype="p", v0="bob", v1="data2", v2="write"),
+            CasbinRule(ptype="p", v0="data2_admin", v1="data2", v2="read"),
+            CasbinRule(ptype="p", v0="data2_admin", v1="data2", v2="write"),
+            CasbinRule(ptype="g", v0="alice", v1="data2_admin"),
+        ]
+    )
+    await session.commit()
+    await session.close()
 
-@pytest.fixture(name="CustomRule")
+    adapter = AsyncAdapter(engine)
+    enforcer = casbin.AsyncEnforcer(rbac_model_conf, adapter)
+    await enforcer.load_policy()
+    return enforcer
+
+@pytest.fixture(name="CustomRule", scope="session")
 async def CustomRule_fixture():
     class CustomRule(SQLModel, table=True):
         __tablename__ = "casbin_rule2"
@@ -76,7 +97,7 @@ async def CustomRule_fixture():
     return CustomRule
 
 
-@pytest.fixture(name="CustomRuleBroken")
+@pytest.fixture(name="CustomRuleBroken", scope="session")
 async def CustomRuleBroken_fixture():
     class CustomRuleBroken(SQLModel, table=True):
         __tablename__ = "casbin_rule3"
