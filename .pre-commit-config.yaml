@@ -2,7 +2,7 @@
 # See https://pre-commit.com/hooks.html for more hooks
 exclude: ^(poetry.lock|.vscode/)
 default_language_version:
-  python: python3.11
+  python: python3
 
 repos:
 

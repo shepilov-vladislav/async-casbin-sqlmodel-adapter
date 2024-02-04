@@ -26,7 +26,6 @@ aiosqlite = "^0.19.0"
 greenlet = "^3.0.3"
 
 [tool.ruff]
-target-version = "py310"
 select = [
     "F",      # pyflakes
     "W",      # pycodestyle warnings
@@ -90,13 +89,13 @@ select = [
 ignore = [
     "E501",  # line too long, handled by black
     "CPY001",  # found copyright notice
+    "UP035",
 ]
 
 [tool.ruff.per-file-ignores]
 "tests/*.py" = ["D", "S101", "RUF012"]
 
 [tool.black]
-target-version = ["py310"]
 max-line-length = 120
 
 [tool.pytest.ini_options]

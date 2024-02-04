@@ -1,15 +1,17 @@
-# Stdlib:
-import re
+from __future__ import annotations
 
-# Thirdparty:
+import re
+from typing import TYPE_CHECKING
+
 import pytest
 from casbin import AsyncEnforcer
-from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession
 from sqlmodel import SQLModel, select
 
-# Firstparty:
 from async_casbin_sqlmodel_adapter import Adapter, AdapterError, Filter
 from async_casbin_sqlmodel_adapter.models import CasbinRule
+
+if TYPE_CHECKING:
+    from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession
 
 
 async def test_custom_db_class(

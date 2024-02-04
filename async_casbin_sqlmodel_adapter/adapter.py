@@ -1,13 +1,17 @@
 """Adapter for Casbin with SQLModel."""
 
+from __future__ import annotations
+
 import warnings
-from typing import ClassVar
+from typing import TYPE_CHECKING, ClassVar
 
 from casbin_async_sqlalchemy_adapter.adapter import Adapter as AsyncAdapter
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
-from sqlmodel import SQLModel
 from typing_extensions import Self
+
+if TYPE_CHECKING:
+    from sqlmodel import SQLModel
 
 
 class AdapterError(Exception):

@@ -1,5 +1,7 @@
 """SQLModel-based Casbin adapter models."""
 
+from __future__ import annotations
+
 from sqlmodel import Field, SQLModel
 from typing_extensions import Self
 
