@@ -4,7 +4,7 @@ from casbin import Model
 from casbin_async_sqlalchemy_adapter.adapter import Adapter as AsyncAdapter
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel.sql.expression import SelectOfScalar
-from typing_extensions import Self  # noqa: UP035
+from typing_extensions import Self
 
 from .adapter import Filter
 

@@ -7,7 +7,7 @@ from casbin_async_sqlalchemy_adapter.adapter import Adapter as AsyncAdapter
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 from sqlmodel import SQLModel
-from typing_extensions import Self  # noqa: UP035
+from typing_extensions import Self
 
 
 class AdapterError(Exception):

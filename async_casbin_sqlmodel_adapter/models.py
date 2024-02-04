@@ -1,7 +1,7 @@
 """SQLModel-based Casbin adapter models."""
 
 from sqlmodel import Field, SQLModel
-from typing_extensions import Self  # noqa: UP035
+from typing_extensions import Self
 
 
 class CasbinRule(SQLModel, table=True):  # type: ignore[call-arg]

@@ -94,7 +94,7 @@ async def main():
 
     adapter = Adapter(engine)
 
-    e = casbin.Enforcer("path/to/model.conf", adapter, True)
+    e = casbin.AsyncEnforcer("path/to/model.conf", adapter, True)
 
     sub = "alice"  # the user that wants to access a resource.
     obj = "data1"  # the resource that is going to be accessed.
