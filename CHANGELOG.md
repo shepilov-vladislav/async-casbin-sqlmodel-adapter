@@ -1,3 +1,9 @@
+## 0.1.1 (2024-02-05)
+
+### Fix
+
+- **pre-commit**: base version is Python3.10
+
 ## 0.1.0 (2024-02-05)
 
 ### Feat
