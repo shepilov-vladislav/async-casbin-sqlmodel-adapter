@@ -1,3 +1,9 @@
+## 0.1.2 (2024-02-05)
+
+### Fix
+
+- **tests**: added matrix testing for Python 3.10 and 3.11
+
 ## 0.1.1 (2024-02-05)
 
 ### Fix
