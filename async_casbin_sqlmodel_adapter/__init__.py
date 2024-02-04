@@ -2,5 +2,5 @@
 
 from .adapter import Adapter, AdapterError, Filter
 
-__version__ = "0.0.5"
+__version__ = "0.1.0"
 __all__ = ("Adapter", "AdapterError", "Filter")
