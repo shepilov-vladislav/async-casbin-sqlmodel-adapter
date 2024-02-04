@@ -1,3 +1,9 @@
+## 0.1.5 (2024-02-05)
+
+### Fix
+
+- **pre-commit**: do not run no-commit-to-branch on CI
+
 ## 0.1.4 (2024-02-05)
 
 ### Fix
