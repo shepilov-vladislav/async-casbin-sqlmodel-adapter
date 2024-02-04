@@ -2,7 +2,7 @@ Async SQLModel Adapter for PyCasbin
 ====
 
 ## Repo
-[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/shepilov-vladislav/async-casbin-sqlmodel-adapter/Pytest?logo=github&style=for-the-badge)](https://github.com/shepilov-vladislav/async-casbin-sqlmodel-adapter)
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/shepilov-vladislav/async-casbin-sqlmodel-adapter/pytest.yml?branch=main?logo=github&style=for-the-badge)](https://github.com/shepilov-vladislav/async-casbin-sqlmodel-adapter)
 [![Codecov](https://img.shields.io/codecov/c/github/shepilov-vladislav/async-casbin-sqlmodel-adapter?logo=codecov&style=for-the-badge)](https://github.com/shepilov-vladislav/async-casbin-sqlmodel-adapter)
 [![Code Climate maintainability](https://img.shields.io/codeclimate/maintainability/shepilov-vladislav/async-casbin-sqlmodel-adapter?logo=code%20climate&style=for-the-badge)](https://codeclimate.com/github/shepilov-vladislav/async-casbin-sqlmodel-adapter/maintainability)
 [![Dependabot](https://img.shields.io/badge/dependabot-Active-brightgreen?logo=dependabot&style=for-the-badge)](https://github.com/shepilov-vladislav/async-casbin-sqlmodel-adapter)
