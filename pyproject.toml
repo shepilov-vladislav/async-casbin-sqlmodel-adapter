@@ -14,40 +14,103 @@ include = [
 
 [tool.poetry.dependencies]
 python = "^3.10"
-asynccasbin = "^1.1.8"
 sqlmodel = "^0.0.14"
 SQLAlchemy = {version = "^2.0.25", extras = ["mypy", "asyncio"]}
+casbin-async-sqlalchemy-adapter = "^1.4.0"
 
-[tool.poetry.dev-dependencies]
-pytest = "^7.1.3"
-pytest-cov = "^4.0.0"
-alt-pytest-asyncio = "^0.6.0"
-aiosqlite = "^0.17.0"
-greenlet = "^1.1.3"
+[tool.poetry.group.dev.dependencies]
+pytest-asyncio = "^0.23.4"
+pytest = "^7.4.4"
+pytest-cov = "^4.1.0"
+aiosqlite = "^0.19.0"
+greenlet = "^3.0.3"
 
-[tool.isort]
-known_third_party = ["casbin", "pytest", "sqlalchemy", "sqlmodel"]
-multi_line_output = 3
-include_trailing_comma = true
-force_grid_wrap = 0
-use_parentheses = true
-line_length = 88
-default_section = "THIRDPARTY"
-known_first_party = "async_casbin_sqlmodel_adapter"
-sections = "FUTURE,STDLIB,THIRDPARTY,FIRSTPARTY,LOCALFOLDER"
-import_heading_future = "Future:"
-import_heading_stdlib = "Stdlib:"
-import_heading_thirdparty = "Thirdparty:"
-import_heading_firstparty = "Firstparty:"
-import_heading_localfolder = "Localfolder:"
+[tool.ruff]
+target-version = "py311"
+select = [
+    "F",      # pyflakes
+    "W",      # pycodestyle warnings
+    "E",      # pycodestyle errors
+    "C90",    # mccabe
+    "I",      # isort
+    "N",      # pep8-naming
+    "D",      # pydocstyle, disabled because of we are using other docstring style
+    "UP",     # pyupgrade
+    "YTT",    # flake8-2020
+    "ANN",    # flake8-annotations
+    "ASYNC",  # flake8-async
+    "S",      # flake8-bandit
+    "BLE",    # flake8-blind-except
+    "FBT",    # flake8-boolean-trap
+    "B",      # flake8-bugbear
+    "A",      # flake8-builtins
+    "COM",    # flake8-commas
+    "CPY",    # flake8-copyright
+    "C4",     # flake8-comprehensions
+    "DTZ",    # flake8-datetimez
+    "T10",    # flake8-debugger
+    "DJ",     # flake8-django
+    "EM",     # flake8-errmsg
+    "EXE",    # flake8-executable
+    "FA",     # flake8-future-annotations
+    "ISC",    # flake8-implicit-str-concat
+    "ICN",    # flake8-import-conventions
+    "G",      # flake8-logging-format
+    "INP",    # flake8-no-pep420
+    "PIE",    # flake8-pie
+    "T20",    # flake8-print
+    "PYI",    # flake8-pyi
+    "PT",     # flake8-pytest
+    "Q",      # flake8-quotes
+    "RSE",    # flake8-raise
+    "RET",    # flake8-return
+    "SLF",    # flake8-self
+    "SLOT",   # flake8-slots
+    "SIM",    # flake8-simplify
+    "TID",    # flake8-tidy-imports
+    "TCH",    # flake8-type-checking
+    "INT",    # flake8-gettext
+    "ARG",    # flake8-unused-arguments
+    "PTH",    # flake8-use-pathlib
+    "TD",     # flake8-todos
+    "FIX",    # flake8-fixme
+    "ERA",    # eradicate
+    "PD",     # pandas-vet
+    "PGH",    # pygrep-hooks
+    "PL",     # Pylint
+    "TRY",    # tryceratops
+    "FLY",    # flynt
+    "NPY",    # NumPy-specific rules
+    "AIR",    # Airflow
+    "PERF",   # Perflint
+    "FURB",   # refurb
+    "LOG",    # flake8-logging
+    "RUF",    # Ruff-specific rules
+]
+ignore = [
+    "E501",  # line too long, handled by black
+    "CPY001",  # found copyright notice
+]
+
+[tool.ruff.per-file-ignores]
+"tests/*.py" = ["D", "S101", "RUF012"]
 
 [tool.black]
-length = 88
+target-version = ["py311"]
+max-line-length = 120
 
-[tool.pylint.'MESSAGES CONTROL']
-disable = ["import-error", "missing-module-docstring"]
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+minversion = "7.0"
+addopts = "-ra -q"
+filterwarnings = [
+    "error",
+    "error:::async_casbin_sqlmodel_adapter",
+    "ignore:Using default CasbinRule table:RuntimeWarning",
+]
 
 [tool.mypy]
+plugins = ["pydantic.mypy"]
 ignore_missing_imports = true
 check_untyped_defs = true
 disallow_any_generics = true
@@ -58,13 +121,37 @@ warn_redundant_casts = true
 warn_unused_ignores = true
 show_error_codes = true
 
-[tool.pytest.ini_options]
-minversion = "7.0.1"
-addopts = "-ra -q"
-filterwarnings = [
-    "once::DeprecationWarning",
-    "once::PendingDeprecationWarning",
-    "ignore::sqlalchemy.exc.SAWarning",
+[tool.coverage.run]
+concurrency = ["greenlet"]
+
+[tool.coverage.report]
+omit = [
+    "tests/*",
+]
+exclude_lines = [
+    # Have to re-enable the standard pragma
+    "pragma: no cover",
+    # Don't check obviously not implemented
+    "raise NotImplementedError",
+    # We don't really care what happens if fail
+    "except ImportError:",
+    # Don't check for typing-only code
+    "if TYPE_CHECKING:",
+    # Don't check for code that only runs itself
+    "if __name__ == .__main__.:",
+]
+show_missing = true
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+tag_format = "$version"
+version_scheme = "semver"
+version_provider = "poetry"
+update_changelog_on_bump = true
+major_version_zero = true
+version_files = [
+    "pyproject.toml:version",
+    "async_casbin_sqlmodel_adapter/__init__.py:__version__",
 ]
 
 [build-system]

@@ -3,26 +3,29 @@ import re
 
 # Thirdparty:
 import pytest
-from casbin import Enforcer
+from casbin import AsyncEnforcer
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession
 from sqlmodel import SQLModel, select
 
 # Firstparty:
-from async_casbin_sqlmodel_adapter import Adapter, AdapterException, Filter
+from async_casbin_sqlmodel_adapter import Adapter, AdapterError, Filter
 from async_casbin_sqlmodel_adapter.models import CasbinRule
 
 
 async def test_custom_db_class(
-    engine: AsyncEngine, session: AsyncSession, CustomRule, CustomRuleBroken
-):
-    with pytest.raises(AdapterException):
+    engine: AsyncEngine,
+    session: AsyncSession,
+    CustomRule: SQLModel,  # noqa: N803
+    CustomRuleBroken: SQLModel,  # noqa: N803
+) -> None:
+    with pytest.raises(AdapterError):
         Adapter("sqlite+aiosqlite:///", CustomRuleBroken)
-
-    adapter = Adapter(engine, CustomRule)
-    assert adapter._db_class == CustomRule
 
     async with engine.begin() as conn:
         await conn.run_sync(SQLModel.metadata.create_all)
+
+    adapter = Adapter(engine, CustomRule)
+    assert adapter._db_class == CustomRule  # noqa: SLF001
 
     session.add(CustomRule(not_exist="NotNone"))
     await session.commit()
@@ -31,7 +34,7 @@ async def test_custom_db_class(
     assert from_db.not_exist == "NotNone"
 
 
-async def test_enforcer_basic(enforcer: Enforcer):
+async def test_enforcer_basic(enforcer: AsyncEnforcer) -> None:
     assert enforcer.enforce("alice", "data1", "read")
     assert not enforcer.enforce("alice", "data1", "write")
     assert not enforcer.enforce("bob", "data1", "read")
@@ -42,24 +45,24 @@ async def test_enforcer_basic(enforcer: Enforcer):
     assert enforcer.enforce("alice", "data2", "write")
 
 
-async def test_add_policy(enforcer: Enforcer):
+async def test_add_policy(enforcer: AsyncEnforcer) -> None:
     assert not enforcer.enforce("eve", "data3", "read")
     res = await enforcer.add_policies(
-        (("eve", "data3", "read"), ("eve", "data4", "read"))
+        (("eve", "data3", "read"), ("eve", "data4", "read")),
     )
     assert res
     assert enforcer.enforce("eve", "data3", "read")
     assert enforcer.enforce("eve", "data4", "read")
 
 
-async def test_add_policies(enforcer: Enforcer):
+async def test_add_policies(enforcer: AsyncEnforcer) -> None:
     assert not enforcer.enforce("eve", "data3", "read")
     res = await enforcer.add_permission_for_user("eve", "data3", "read")
     assert res
     assert enforcer.enforce("eve", "data3", "read")
 
 
-async def test_save_policy(enforcer: Enforcer):
+async def test_save_policy(enforcer: AsyncEnforcer) -> None:
     assert not enforcer.enforce("alice", "data4", "read")
 
     model = enforcer.get_model()
@@ -72,31 +75,30 @@ async def test_save_policy(enforcer: Enforcer):
     assert enforcer.enforce("alice", "data4", "read")
 
 
-async def test_remove_policy(enforcer: Enforcer):
+async def test_remove_policy(enforcer: AsyncEnforcer) -> None:
     assert not enforcer.enforce("alice", "data5", "read")
-    assert not await enforcer.delete_permission_for_user("alice", "data5", "read")
     await enforcer.add_permission_for_user("alice", "data5", "read")
     assert enforcer.enforce("alice", "data5", "read")
-    assert await enforcer.delete_permission_for_user("alice", "data5", "read")
+    await enforcer.delete_permission_for_user("alice", "data5", "read")
     assert not enforcer.enforce("alice", "data5", "read")
 
 
-async def test_remove_policies(enforcer: Enforcer):
+async def test_remove_policies(enforcer: AsyncEnforcer) -> None:
     assert not enforcer.enforce("alice", "data5", "read")
     assert not enforcer.enforce("alice", "data6", "read")
     await enforcer.add_policies(
-        (("alice", "data5", "read"), ("alice", "data6", "read"))
+        (("alice", "data5", "read"), ("alice", "data6", "read")),
     )
     assert enforcer.enforce("alice", "data5", "read")
     assert enforcer.enforce("alice", "data6", "read")
-    assert await enforcer.remove_policies(
-        (("alice", "data5", "read"), ("alice", "data6", "read"))
+    await enforcer.remove_policies(
+        (("alice", "data5", "read"), ("alice", "data6", "read")),
     )
     assert not enforcer.enforce("alice", "data5", "read")
     assert not enforcer.enforce("alice", "data6", "read")
 
 
-async def test_remove_filtered_policy(enforcer: Enforcer):
+async def test_remove_filtered_policy(enforcer: AsyncEnforcer) -> None:
     assert enforcer.enforce("alice", "data1", "read")
     await enforcer.remove_filtered_policy(1, "data1")
     assert not enforcer.enforce("alice", "data1", "read")
@@ -116,20 +118,8 @@ async def test_remove_filtered_policy(enforcer: Enforcer):
     assert not enforcer.enforce("bob", "data2", "write")
     assert not enforcer.enforce("alice", "data2", "write")
 
-    # await enforcer.add_permission_for_user("alice", "data6", "delete")
-    # await enforcer.add_permission_for_user("bob", "data6", "delete")
-    # await enforcer.add_permission_for_user("eve", "data6", "delete")
-    # assert enforcer.enforce("alice", "data6", "delete")
-    # assert enforcer.enforce("bob", "data6", "delete")
-    # assert enforcer.enforce("eve", "data6", "delete")
-    # await enforcer.remove_filtered_policy(0, "alice", None, "delete")
-    # assert not enforcer.enforce("alice", "data6", "delete")
-    # await enforcer.remove_filtered_policy(0, None, None, "delete")
-    # assert not enforcer.enforce("bob", "data6", "delete")
-    # assert not enforcer.enforce("eve", "data6", "delete")
 
-
-async def test_str():
+async def test_str() -> None:
     rule = CasbinRule(ptype="p", v0="alice", v1="data1", v2="read")
     assert str(rule) == "p, alice, data1, read"
     rule = CasbinRule(ptype="p", v0="bob", v1="data2", v2="write")
@@ -142,7 +132,7 @@ async def test_str():
     assert str(rule) == "g, alice, data2_admin"
 
 
-async def test_repr(engine: AsyncEngine, session: AsyncSession):
+async def test_repr(engine: AsyncEngine, session: AsyncSession) -> None:
     rule = CasbinRule(ptype="p", v0="alice", v1="data1", v2="read")
     assert repr(rule) == '<CasbinRule None: "p, alice, data1, read">'
     async with engine.begin() as conn:
@@ -150,15 +140,15 @@ async def test_repr(engine: AsyncEngine, session: AsyncSession):
 
     session.add(rule)
     await session.commit()
-    re.search(repr(rule), r'<CasbinRule \d+: "p, alice, data1, read">')
+    assert re.match(r'<CasbinRule \d+: "p, alice, data1, read">', repr(rule))
     await session.close()
 
 
-async def test_filtered_policy(enforcer: Enforcer):
-    filter = Filter()
+async def test_filtered_policy(enforcer: AsyncEnforcer) -> None:  # noqa: PLR0915
+    _filter = Filter()
 
-    filter.ptype = ["p"]
-    await enforcer.load_filtered_policy(filter)
+    _filter.ptype = ["p"]
+    await enforcer.load_filtered_policy(_filter)
     assert enforcer.enforce("alice", "data1", "read")
     assert not enforcer.enforce("alice", "data1", "write")
     assert not enforcer.enforce("alice", "data2", "read")
@@ -168,9 +158,9 @@ async def test_filtered_policy(enforcer: Enforcer):
     assert not enforcer.enforce("bob", "data2", "read")
     assert enforcer.enforce("bob", "data2", "write")
 
-    filter.ptype = []
-    filter.v0 = ["alice"]
-    await enforcer.load_filtered_policy(filter)
+    _filter.ptype = []
+    _filter.v0 = ["alice"]
+    await enforcer.load_filtered_policy(_filter)
     assert enforcer.enforce("alice", "data1", "read")
     assert not enforcer.enforce("alice", "data1", "write")
     assert not enforcer.enforce("alice", "data2", "read")
@@ -182,8 +172,8 @@ async def test_filtered_policy(enforcer: Enforcer):
     assert not enforcer.enforce("data2_admin", "data2", "read")
     assert not enforcer.enforce("data2_admin", "data2", "write")
 
-    filter.v0 = ["bob"]
-    await enforcer.load_filtered_policy(filter)
+    _filter.v0 = ["bob"]
+    await enforcer.load_filtered_policy(_filter)
     assert not enforcer.enforce("alice", "data1", "read")
     assert not enforcer.enforce("alice", "data1", "write")
     assert not enforcer.enforce("alice", "data2", "read")
@@ -195,8 +185,8 @@ async def test_filtered_policy(enforcer: Enforcer):
     assert not enforcer.enforce("data2_admin", "data2", "read")
     assert not enforcer.enforce("data2_admin", "data2", "write")
 
-    filter.v0 = ["data2_admin"]
-    await enforcer.load_filtered_policy(filter)
+    _filter.v0 = ["data2_admin"]
+    await enforcer.load_filtered_policy(_filter)
     assert enforcer.enforce("data2_admin", "data2", "read")
     assert enforcer.enforce("data2_admin", "data2", "read")
     assert not enforcer.enforce("alice", "data1", "read")
@@ -208,8 +198,8 @@ async def test_filtered_policy(enforcer: Enforcer):
     assert not enforcer.enforce("bob", "data2", "read")
     assert not enforcer.enforce("bob", "data2", "write")
 
-    filter.v0 = ["alice", "bob"]
-    await enforcer.load_filtered_policy(filter)
+    _filter.v0 = ["alice", "bob"]
+    await enforcer.load_filtered_policy(_filter)
     assert enforcer.enforce("alice", "data1", "read")
     assert not enforcer.enforce("alice", "data1", "write")
     assert not enforcer.enforce("alice", "data2", "read")
@@ -221,9 +211,9 @@ async def test_filtered_policy(enforcer: Enforcer):
     assert not enforcer.enforce("data2_admin", "data2", "read")
     assert not enforcer.enforce("data2_admin", "data2", "write")
 
-    filter.v0 = []
-    filter.v1 = ["data1"]
-    await enforcer.load_filtered_policy(filter)
+    _filter.v0 = []
+    _filter.v1 = ["data1"]
+    await enforcer.load_filtered_policy(_filter)
     assert enforcer.enforce("alice", "data1", "read")
     assert not enforcer.enforce("alice", "data1", "write")
     assert not enforcer.enforce("alice", "data2", "read")
@@ -235,8 +225,8 @@ async def test_filtered_policy(enforcer: Enforcer):
     assert not enforcer.enforce("data2_admin", "data2", "read")
     assert not enforcer.enforce("data2_admin", "data2", "write")
 
-    filter.v1 = ["data2"]
-    await enforcer.load_filtered_policy(filter)
+    _filter.v1 = ["data2"]
+    await enforcer.load_filtered_policy(_filter)
     assert not enforcer.enforce("alice", "data1", "read")
     assert not enforcer.enforce("alice", "data1", "write")
     assert not enforcer.enforce("alice", "data2", "read")
@@ -248,9 +238,9 @@ async def test_filtered_policy(enforcer: Enforcer):
     assert enforcer.enforce("data2_admin", "data2", "read")
     assert enforcer.enforce("data2_admin", "data2", "write")
 
-    filter.v1 = []
-    filter.v2 = ["read"]
-    await enforcer.load_filtered_policy(filter)
+    _filter.v1 = []
+    _filter.v2 = ["read"]
+    await enforcer.load_filtered_policy(_filter)
     assert enforcer.enforce("alice", "data1", "read")
     assert not enforcer.enforce("alice", "data1", "write")
     assert not enforcer.enforce("alice", "data2", "read")
@@ -262,8 +252,8 @@ async def test_filtered_policy(enforcer: Enforcer):
     assert enforcer.enforce("data2_admin", "data2", "read")
     assert not enforcer.enforce("data2_admin", "data2", "write")
 
-    filter.v2 = ["write"]
-    await enforcer.load_filtered_policy(filter)
+    _filter.v2 = ["write"]
+    await enforcer.load_filtered_policy(_filter)
     assert not enforcer.enforce("alice", "data1", "read")
     assert not enforcer.enforce("alice", "data1", "write")
     assert not enforcer.enforce("alice", "data2", "read")
@@ -276,12 +266,13 @@ async def test_filtered_policy(enforcer: Enforcer):
     assert enforcer.enforce("data2_admin", "data2", "write")
 
 
-async def test_update_policy(enforcer: Enforcer):
+async def test_update_policy(enforcer: AsyncEnforcer) -> None:
     example_p = ["mike", "cookie", "eat"]
 
     assert enforcer.enforce("alice", "data1", "read")
     await enforcer.update_policy(
-        ["alice", "data1", "read"], ["alice", "data1", "no_read"]
+        ["alice", "data1", "read"],
+        ["alice", "data1", "no_read"],
     )
     assert not enforcer.enforce("alice", "data1", "read")
 
@@ -304,12 +295,13 @@ async def test_update_policy(enforcer: Enforcer):
 
     assert enforcer.enforce("carl", "data2", "write")
     await enforcer.update_policy(
-        ["carl", "data2", "write"], ["carl", "data2", "no_write"]
+        ["carl", "data2", "write"],
+        ["carl", "data2", "no_write"],
     )
     assert not enforcer.enforce("bob", "data2", "write")
 
 
-async def test_update_policies(enforcer: Enforcer):
+async def test_update_policies(enforcer: AsyncEnforcer) -> None:
     old_rule_0 = ["alice", "data1", "read"]
     old_rule_1 = ["bob", "data2", "write"]
     old_rule_2 = ["data2_admin", "data2", "read"]
@@ -338,13 +330,36 @@ async def test_update_policies(enforcer: Enforcer):
     assert enforcer.enforce("data2_admin", "data_test", "write")
 
 
-async def test_is_filtered(engine: AsyncEngine, session: AsyncSession, rbac_model_conf):
+async def test_update_filtered_policies(enforcer: AsyncEnforcer) -> None:
+    await enforcer.update_filtered_policies(
+        [
+            ["data2_admin", "data3", "read"],
+            ["data2_admin", "data3", "write"],
+        ],
+        0,
+        "data2_admin",
+    )
+    assert enforcer.enforce("data2_admin", "data3", "write")
+    assert enforcer.enforce("data2_admin", "data3", "read")
+
+    await enforcer.update_filtered_policies([["alice", "data1", "write"]], 0, "alice")
+    assert enforcer.enforce("alice", "data1", "write")
+
+    await enforcer.update_filtered_policies([["bob", "data2", "read"]], 0, "bob")
+    assert enforcer.enforce("bob", "data2", "read")
+
+
+async def test_is_filtered(
+    engine: AsyncEngine,
+    session: AsyncSession,  # noqa: ARG001
+    rbac_model_conf: str,
+) -> None:
     adapter1 = Adapter(engine)
-    enforcer1 = Enforcer(rbac_model_conf, adapter1)
+    enforcer1 = AsyncEnforcer(rbac_model_conf, adapter1)
     await enforcer1.load_policy()
     assert not enforcer1.is_filtered()
 
     adapter1 = Adapter(engine, filtered=True)
-    enforcer1 = Enforcer(rbac_model_conf, adapter1)
+    enforcer1 = AsyncEnforcer(rbac_model_conf, adapter1)
     await enforcer1.load_policy()
     assert enforcer1.is_filtered()

@@ -1,2 +1,6 @@
-# Localfolder:
-from .adapter import Adapter, AdapterException, Filter  # noqa: F401
+"""Async SQLModel Adapter for PyCasbin."""
+
+from .adapter import Adapter, AdapterError, Filter
+
+__version__ = "0.0.5"
+__all__ = ("Adapter", "AdapterError", "Filter")
