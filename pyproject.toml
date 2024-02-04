@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "async-casbin-sqlmodel-adapter"
-version = "0.1.2"
+version = "0.1.3"
 description = "Async SQLModel Adapter for PyCasbin"
 authors = ["Vladislav Shepilov <shepilov.v@protonmail.com>"]
 keywords = ["pycasbin", "asynccasbin", "sqlmodel"]
